@@ -1,0 +1,60 @@
+diff --git a/install-cn.sh b/install-cn.sh
+index df4ee22..befc126 100755
+--- a/install-cn.sh
++++ b/install-cn.sh
+@@ -538,7 +538,7 @@ setup_ip_certificate() {
+     # Choose port for HTTP-01 listener (default 80, prompt override)
+     local WebPort=""
+     prompt_or_default WebPort "Port to use for ACME HTTP-01 listener (default 80): " "80" XUI_ACME_HTTP_PORT
+-    WebPort="${Web端口：-80}"
++    WebPort="${WebPort:-80}"
+     if ! [[ "${WebPort}" =~ ^[0-9]+$ ]] || ((WebPort < 1 || WebPort > 65535)); then
+         echo -e "${red}Invalid port provided. Falling back to 80.${plain}"
+         WebPort=80
+diff --git a/scripts/translate-cn.py b/scripts/translate-cn.py
+index f498e13..1ab10dd 100644
+--- a/scripts/translate-cn.py
++++ b/scripts/translate-cn.py
+@@ -190,7 +190,18 @@ MENU_ITEMS = {
+ 
+ 
+ def translate_text(text: str) -> str:
+-    translated = text
++    # Keep shell parameter expansions byte-for-byte intact while translating
++    # human-facing text.  A plain replacement such as ``Port:`` would
++    # otherwise corrupt identifiers/default expressions like
++    # ``${WebPort:-80}`` into ``${Web端口：-80}``, which Bash rejects.
++    protected: dict[str, str] = {}
++
++    def protect(match: re.Match[str]) -> str:
++        token = f"__SHELL_PARAM_{len(protected)}__"
++        protected[token] = match.group(0)
++        return token
++
++    translated = re.sub(r"\$\{[^}\n]*\}", protect, text)
+     for source, target in PHRASES:
+         translated = translated.replace(source, target)
+ 
+@@ -230,6 +241,9 @@ def translate_text(text: str) -> str:
+         "PostgreSQL （建议大量客户端/多节点时使用）",
+     )
+     translated = translated.replace("y/n", "y/n")
++
++    for token, value in protected.items():
++        translated = translated.replace(token, value)
+     return translated
+ 
+ 
+diff --git a/x-ui-cn.sh b/x-ui-cn.sh
+index c43e5f1..dcb78f5 100755
+--- a/x-ui-cn.sh
++++ b/x-ui-cn.sh
+@@ -1683,7 +1683,7 @@ ssl_cert_issue_for_ip() {
+     # Choose port for HTTP-01 listener (default 80, allow override)
+     local WebPort=""
+     read -rp "Port to use for ACME HTTP-01 listener (default 80): " WebPort
+-    WebPort="${Web端口：-80}"
++    WebPort="${WebPort:-80}"
+     if ! [[ "${WebPort}" =~ ^[0-9]+$ ]] || ((WebPort < 1 || WebPort > 65535)); then
+         LOGE "Invalid port provided. Falling back to 80."
+         WebPort=80

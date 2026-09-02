@@ -1,0 +1,16 @@
+Verification date: 2026-09-02
+
+Baseline
+- Source commit: 2eb8916fa502890e2e46e1b4384a1fe5c3cd5ede
+- SHA-256 values: artifacts/fix-original.sha256
+
+Checks
+1. `bash -n install-cn.sh` -> exit 0
+2. `bash -n x-ui-cn.sh` -> exit 0
+3. Translator regression fixture (`WebPort="${WebPort:-80}" Port:`) -> output preserves `${WebPort:-80}` and translates only `Port:`; exit 0
+4. Non-ASCII shell-parameter scan over both generated scripts -> no findings; exit 0
+
+Expected behavior
+- Empty `WebPort` resolves to numeric default `80`.
+- A user-provided numeric port remains unchanged.
+- Generated scripts no longer contain `${Web端口：-80}`.
