@@ -12,7 +12,7 @@ index df4ee22..befc126 100755
          echo -e "${red}Invalid port provided. Falling back to 80.${plain}"
          WebPort=80
 diff --git a/scripts/translate-cn.py b/scripts/translate-cn.py
-index f498e13..1ab10dd 100644
+index f498e13..9da0152 100644
 --- a/scripts/translate-cn.py
 +++ b/scripts/translate-cn.py
 @@ -190,7 +190,18 @@ MENU_ITEMS = {
@@ -22,8 +22,8 @@ index f498e13..1ab10dd 100644
 -    translated = text
 +    # Keep shell parameter expansions byte-for-byte intact while translating
 +    # human-facing text.  A plain replacement such as ``Port:`` would
-+    # otherwise corrupt identifiers/default expressions like
-+    # ``${WebPort:-80}`` into ``${Web端口：-80}``, which Bash rejects.
++    # otherwise corrupt identifiers/default expressions such as the WebPort
++    # default expansion, which Bash rejects once localized text enters it.
 +    protected: dict[str, str] = {}
 +
 +    def protect(match: re.Match[str]) -> str:
@@ -45,6 +45,45 @@ index f498e13..1ab10dd 100644
      return translated
  
  
+diff --git a/tests/test_shell_identifiers.py b/tests/test_shell_identifiers.py
+new file mode 100644
+index 0000000..db1dbfb
+--- /dev/null
++++ b/tests/test_shell_identifiers.py
+@@ -0,0 +1,33 @@
++#!/usr/bin/env python3
++"""Regression checks for translated shell identifiers."""
++
++import importlib.util
++import re
++from pathlib import Path
++
++
++spec = importlib.util.spec_from_file_location("translate_cn", Path(__file__).parents[1] / "scripts/translate-cn.py")
++module = importlib.util.module_from_spec(spec)
++assert spec.loader is not None
++spec.loader.exec_module(module)
++
++
++def test_parameter_expansion_is_preserved() -> None:
++    translated = module.translate_text('WebPort="${WebPort:-80}" Port:')
++    assert '${WebPort:-80}' in translated
++    assert 'Web端口：-80' not in translated
++    assert '端口：' in translated
++
++
++def test_generated_scripts_have_ascii_parameter_names() -> None:
++    expansion = re.compile(r"\$\{[^}\n]*\}")
++    for name in ("install-cn.sh", "x-ui-cn.sh"):
++        text = (Path(__file__).parents[1] / name).read_text(encoding="utf-8")
++        for match in expansion.finditer(text):
++            assert all(ord(char) < 128 for char in match.group(0)), match.group(0)
++
++
++if __name__ == "__main__":
++    test_parameter_expansion_is_preserved()
++    test_generated_scripts_have_ascii_parameter_names()
++    print("pass")
 diff --git a/x-ui-cn.sh b/x-ui-cn.sh
 index c43e5f1..dcb78f5 100755
 --- a/x-ui-cn.sh
