@@ -9,6 +9,7 @@ Checks
 2. `bash -n x-ui-cn.sh` -> exit 0
 3. Translator regression fixture (`WebPort="${WebPort:-80}" Port:`) -> output preserves `${WebPort:-80}` and translates only `Port:`; exit 0
 4. Non-ASCII shell-parameter scan over both generated scripts -> no findings; exit 0
+5. `python tests/test_shell_identifiers.py` -> `pass`; exit 0
 
 Expected behavior
 - Empty `WebPort` resolves to numeric default `80`.
