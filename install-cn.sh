@@ -538,7 +538,7 @@ setup_ip_certificate() {
     # Choose port for HTTP-01 listener (default 80, prompt override)
     local WebPort=""
     prompt_or_default WebPort "Port to use for ACME HTTP-01 listener (default 80): " "80" XUI_ACME_HTTP_PORT
-    WebPort="${Web端口：-80}"
+    WebPort="${WebPort:-80}"
     if ! [[ "${WebPort}" =~ ^[0-9]+$ ]] || ((WebPort < 1 || WebPort > 65535)); then
         echo -e "${red}Invalid port provided. Falling back to 80.${plain}"
         WebPort=80
