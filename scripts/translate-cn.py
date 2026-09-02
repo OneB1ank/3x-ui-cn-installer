@@ -192,8 +192,8 @@ MENU_ITEMS = {
 def translate_text(text: str) -> str:
     # Keep shell parameter expansions byte-for-byte intact while translating
     # human-facing text.  A plain replacement such as ``Port:`` would
-    # otherwise corrupt identifiers/default expressions like
-    # ``${WebPort:-80}`` into ``${Web端口：-80}``, which Bash rejects.
+    # otherwise corrupt identifiers/default expressions such as the WebPort
+    # default expansion, which Bash rejects once localized text enters it.
     protected: dict[str, str] = {}
 
     def protect(match: re.Match[str]) -> str:
