@@ -190,7 +190,18 @@ MENU_ITEMS = {
 
 
 def translate_text(text: str) -> str:
-    translated = text
+    # Keep shell parameter expansions byte-for-byte intact while translating
+    # human-facing text.  A plain replacement such as ``Port:`` would
+    # otherwise corrupt identifiers/default expressions such as the WebPort
+    # default expansion, which Bash rejects once localized text enters it.
+    protected: dict[str, str] = {}
+
+    def protect(match: re.Match[str]) -> str:
+        token = f"__SHELL_PARAM_{len(protected)}__"
+        protected[token] = match.group(0)
+        return token
+
+    translated = re.sub(r"\$\{[^}\n]*\}", protect, text)
     for source, target in PHRASES:
         translated = translated.replace(source, target)
 
@@ -230,6 +241,9 @@ def translate_text(text: str) -> str:
         "PostgreSQL （建议大量客户端/多节点时使用）",
     )
     translated = translated.replace("y/n", "y/n")
+
+    for token, value in protected.items():
+        translated = translated.replace(token, value)
     return translated
 
 

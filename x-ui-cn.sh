@@ -1683,7 +1683,7 @@ ssl_cert_issue_for_ip() {
     # Choose port for HTTP-01 listener (default 80, allow override)
     local WebPort=""
     read -rp "Port to use for ACME HTTP-01 listener (default 80): " WebPort
-    WebPort="${Web端口：-80}"
+    WebPort="${WebPort:-80}"
     if ! [[ "${WebPort}" =~ ^[0-9]+$ ]] || ((WebPort < 1 || WebPort > 65535)); then
         LOGE "Invalid port provided. Falling back to 80."
         WebPort=80
