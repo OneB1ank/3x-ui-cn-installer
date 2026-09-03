@@ -53,8 +53,19 @@ def test_web_port_default_expansion_at_runtime() -> None:
         assert explicit.stdout == "8443", (name, explicit.stdout)
 
 
+def test_generated_scripts_use_fork_installer_urls() -> None:
+    raw_base = "https://raw.githubusercontent.com/OneB1ank/3x-ui-cn-installer/main"
+    install_text = (Path(__file__).parents[1] / "install-cn.sh").read_text(encoding="utf-8")
+    menu_text = (Path(__file__).parents[1] / "x-ui-cn.sh").read_text(encoding="utf-8")
+
+    assert f"{raw_base}/x-ui-cn.sh" in install_text
+    assert f"{raw_base}/install-cn.sh" in menu_text
+    assert f"{raw_base}/x-ui-cn.sh" in menu_text
+
+
 if __name__ == "__main__":
     test_parameter_expansion_is_preserved()
     test_generated_scripts_have_ascii_parameter_names()
     test_web_port_default_expansion_at_runtime()
+    test_generated_scripts_use_fork_installer_urls()
     print("pass")

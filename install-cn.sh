@@ -1553,7 +1553,7 @@ install_x-ui() {
     fi
     local xui_script_temp="/usr/bin/x-ui-temp.$$"
     rm -f "${xui_script_temp}"
-    download_github_file "${xui_script_temp}" https://raw.githubusercontent.com/Fourgetu/3x-ui-cn-installer/main/x-ui-cn.sh
+    download_github_file "${xui_script_temp}" https://raw.githubusercontent.com/OneB1ank/3x-ui-cn-installer/main/x-ui-cn.sh
     if [[ $? -ne 0 ]]; then
         rm -f "${xui_script_temp}"
         echo -e "${red}下载 x-ui.sh 失败${plain}"

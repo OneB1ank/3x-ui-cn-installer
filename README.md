@@ -7,10 +7,10 @@
 ## 一键安装
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/Fourgetu/3x-ui-cn-installer/main/install-cn.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/OneB1ank/3x-ui-cn-installer/main/install-cn.sh)
 ```
 
-如果你再次 fork 本仓库，请把命令里的 `Fourgetu/3x-ui-cn-installer` 改成你的仓库名，例如：
+如果你再次 fork 本仓库，请把命令里的 `OneB1ank/3x-ui-cn-installer` 改成你的仓库名，例如：
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/你的用户名/3x-ui-cn-installer/main/install-cn.sh)

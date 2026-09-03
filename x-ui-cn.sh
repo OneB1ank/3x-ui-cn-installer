@@ -186,7 +186,7 @@ before_show_menu() {
 }
 
 install() {
-    run_github_script https://raw.githubusercontent.com/Fourgetu/3x-ui-cn-installer/main/install-cn.sh
+    run_github_script https://raw.githubusercontent.com/OneB1ank/3x-ui-cn-installer/main/install-cn.sh
     if [[ $? == 0 ]]; then
         if [[ $# == 0 ]]; then
             start
@@ -276,7 +276,7 @@ update_menu() {
         return 0
     fi
 
-    if replace_xui_script "https://raw.githubusercontent.com/Fourgetu/3x-ui-cn-installer/main/x-ui-cn.sh" "false"; then
+    if replace_xui_script "https://raw.githubusercontent.com/OneB1ank/3x-ui-cn-installer/main/x-ui-cn.sh" "false"; then
         chmod +x ${xui_folder}/x-ui.sh
         echo -e "${green}更新成功，面板已自动重启。${plain}"
         exit 0
@@ -295,7 +295,7 @@ legacy_version() {
         exit 1
     fi
     # Use the entered panel version in the download link
-    install_command="run_github_script https://raw.githubusercontent.com/Fourgetu/3x-ui-cn-installer/main/install-cn.sh v$tag_version"
+    install_command="run_github_script https://raw.githubusercontent.com/OneB1ank/3x-ui-cn-installer/main/install-cn.sh v$tag_version"
 
     echo "正在下载并安装面板版本 $tag_version..."
     eval $install_command
@@ -360,7 +360,7 @@ uninstall() {
     echo ""
     echo -e "卸载成功。\n"
     echo "如需重新安装面板，可以使用以下命令："
-    echo -e "${green}run_github_script https://raw.githubusercontent.com/Fourgetu/3x-ui-cn-installer/main/install-cn.sh${plain}"
+    echo -e "${green}run_github_script https://raw.githubusercontent.com/OneB1ank/3x-ui-cn-installer/main/install-cn.sh${plain}"
     echo ""
     # Trap the SIGTERM signal
     trap delete_script SIGTERM
@@ -893,7 +893,7 @@ enable_bbr() {
 }
 
 update_shell() {
-    if replace_xui_script "https://raw.githubusercontent.com/Fourgetu/3x-ui-cn-installer/main/x-ui-cn.sh" "true"; then
+    if replace_xui_script "https://raw.githubusercontent.com/OneB1ank/3x-ui-cn-installer/main/x-ui-cn.sh" "true"; then
         LOGI "Upgrade script succeeded, Please rerun the script"
         before_show_menu
     else
